@@ -40,6 +40,3 @@ def hello_world():
         if response_text[0] and response_text[1]:
             returned_json[response_text[0].strip()] = response_text[1]
     return jsonify(returned_json)
-
-if __name__ == '__main__':
-    app.run(debug=1)
