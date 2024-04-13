@@ -173,7 +173,7 @@ public class landingPage extends AppCompatActivity {
 
     private void postData(String location) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://xplore-oy2j.onrender.com/";
+        String url = "https://xplore-vkzl.onrender.com/";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("location", location);
