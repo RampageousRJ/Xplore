@@ -19,6 +19,9 @@
         android:theme="@style/Theme.Xplore"
         tools:targetApi="31">
         <activity
+            android:name=".SearchPlaces"
+            android:exported="false" />
+        <activity
             android:name=".feedback"
             android:exported="false" />
         <activity

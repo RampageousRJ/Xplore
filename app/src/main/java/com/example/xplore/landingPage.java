@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.android.volley.Request;
@@ -45,6 +46,8 @@ public class landingPage extends AppCompatActivity {
     Button find,clear;
     EditText loc;
     ListView list;
+    ImageButton imb;
+    double latitude, longitude;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1001;
     ArrayList<String> list_values = new ArrayList<>();
     ArrayList<String> temp_values = new ArrayList<>();
@@ -56,6 +59,17 @@ public class landingPage extends AppCompatActivity {
         loc = (EditText)findViewById(R.id.location);
         list = (ListView)findViewById(R.id.list);
         list.setVisibility(View.INVISIBLE);
+
+        imb = (ImageButton)findViewById(R.id.searchButton);
+        imb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(landingPage.this, SearchPlaces.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                startActivity(intent);
+            }
+        });
 
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
@@ -139,8 +153,8 @@ public class landingPage extends AppCompatActivity {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
                     String state_val = getStateFromCoordinates(landingPage.this,latitude, longitude);
                     Toast.makeText(landingPage.this, "State: " + state_val, Toast.LENGTH_SHORT).show();
                     postData(state_val);

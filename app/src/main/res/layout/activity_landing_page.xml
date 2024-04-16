@@ -65,7 +65,7 @@
         app:srcCompat="@drawable/frame_removebg_preview" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/searchButton"
         android:layout_width="56dp"
         android:layout_height="48dp"
         android:backgroundTint="#FFEDB477"
