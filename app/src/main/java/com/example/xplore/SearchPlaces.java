@@ -29,18 +29,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SearchPlaces extends AppCompatActivity {
-    ImageButton home;
+    ImageButton home,profile;
     double latitude, longitude;
     ListView places_list;
     HashMap<String,String> place_map;
     Spinner selector;
+    String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_places);
         home = findViewById(R.id.homeButton);
+        email = getIntent().getStringExtra("email");
+
+        profile = findViewById(R.id.profileButton);
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(SearchPlaces.this, Profile.class);
+            intent.putExtra("email", getIntent().getStringExtra("email"));
+            startActivity(intent);
+        });
+
         home.setOnClickListener(v -> {
             Intent intent = new Intent(SearchPlaces.this, landingPage.class);
+            intent.putExtra("email", getIntent().getStringExtra("email"));
             startActivity(intent);
         });
 
@@ -70,6 +81,7 @@ public class SearchPlaces extends AppCompatActivity {
                 Intent intent = new Intent(SearchPlaces.this, PlaceDetails.class);
                 intent.putExtra("fsq_id", place_map.get(adapterView.getItemAtPosition(i).toString()));
                 intent.putExtra("distance", place_map.get(adapterView.getItemAtPosition(i).toString()+"_distance"));
+                intent.putExtra("email", intent.getStringExtra("email"));
                 startActivity(intent);
             }
         });

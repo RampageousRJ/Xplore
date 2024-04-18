@@ -43,8 +43,9 @@ public class PlaceDetails extends AppCompatActivity {
     TextView place_name,place_category;
     TextView place_location,place_distance;
     String distance;
+    String email;
 
-    ImageButton home,search;
+    ImageButton home,search,profile;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -56,16 +57,26 @@ public class PlaceDetails extends AppCompatActivity {
         reviews_list = findViewById(R.id.reviews_list);
         place_distance = findViewById(R.id.place_distance);
         place_category = findViewById(R.id.place_category);
+        email = getIntent().getStringExtra("email");
 
         home = findViewById(R.id.homeButton);
         home.setOnClickListener(v -> {
             Intent intent = new Intent(PlaceDetails.this, landingPage.class);
+            intent.putExtra("email", email);
             startActivity(intent);
         });
 
         search = findViewById(R.id.searchButton);
         search.setOnClickListener(v -> {
             Intent intent = new Intent(PlaceDetails.this, SearchPlaces.class);
+            intent.putExtra("email", email);
+            startActivity(intent);
+        });
+
+        profile = findViewById(R.id.profileButton);
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(PlaceDetails.this, Profile.class);
+            intent.putExtra("email", email);
             startActivity(intent);
         });
 
@@ -74,7 +85,6 @@ public class PlaceDetails extends AppCompatActivity {
         distance = intent.getStringExtra("distance");
         assert distance != null;
         place_distance.setText("Distance: "+Double.parseDouble(distance)/1000+" km");
-
 
         populateDetails(fsq_id);
         populateReviews(fsq_id);
@@ -108,9 +118,7 @@ public class PlaceDetails extends AppCompatActivity {
                 },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PlaceDetails.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
-                    }
+                    public void onErrorResponse(VolleyError error) {}
                 }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -146,7 +154,6 @@ public class PlaceDetails extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("Error: ", error.toString());
-                        Toast.makeText(PlaceDetails.this, error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override

@@ -46,11 +46,13 @@ public class landingPage extends AppCompatActivity {
     Button find,clear;
     EditText loc;
     ListView list;
-    ImageButton imb;
+    ImageButton imb,profile;
     double latitude, longitude;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1001;
     ArrayList<String> list_values = new ArrayList<>();
     ArrayList<String> temp_values = new ArrayList<>();
+    static String email;
+
     private boolean doubleBackToExitPressedOnce = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,17 @@ public class landingPage extends AppCompatActivity {
         list = (ListView)findViewById(R.id.list);
         list.setVisibility(View.INVISIBLE);
 
+        email = getIntent().getStringExtra("email");
+        profile = (ImageButton)findViewById(R.id.profileButton);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(landingPage.this, Profile.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            }
+        });
+
         imb = (ImageButton)findViewById(R.id.searchButton);
         imb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +80,7 @@ public class landingPage extends AppCompatActivity {
                 Intent intent = new Intent(landingPage.this, SearchPlaces.class);
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
+                intent.putExtra("email", email);
                 startActivity(intent);
             }
         });
@@ -156,20 +170,22 @@ public class landingPage extends AppCompatActivity {
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
                     String state_val = getStateFromCoordinates(landingPage.this,latitude, longitude);
-                    Toast.makeText(landingPage.this, "State: " + state_val, Toast.LENGTH_SHORT).show();
                     postData(state_val);
                 }
             }
         });
     }
 
-    public static String getStateFromCoordinates(Context context, double latitude, double longitude) {
+    public String getStateFromCoordinates(Context context, double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         String state_val = "";
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
+                String address1 = setCompleteAddress(address);
+                DBHandler db = new DBHandler(this);
+                db.setAddress(email,address1);
                 state_val = address.getAdminArea();
             }
         } catch (IOException e) {
@@ -220,5 +236,31 @@ public class landingPage extends AppCompatActivity {
             }
         });
         queue.add(jsonObjectRequest);
+    }
+
+    public static String setCompleteAddress(Address address) {
+        StringBuilder completeAddress = new StringBuilder();
+        if (address.getSubThoroughfare() != null) {
+            completeAddress.append(address.getSubThoroughfare()).append(", ");
+        }
+        if (address.getThoroughfare() != null) {
+            completeAddress.append(address.getThoroughfare()).append(", ");
+        }
+        if (address.getSubLocality() != null) {
+            completeAddress.append(address.getSubLocality()).append(", ");
+        }
+        if (address.getLocality() != null) {
+            completeAddress.append(address.getLocality()).append(", ");
+        }
+        if (address.getAdminArea() != null) {
+            completeAddress.append(address.getAdminArea()).append(", ");
+        }
+        if (address.getPostalCode() != null) {
+            completeAddress.append(address.getPostalCode()).append(", ");
+        }
+        if (address.getCountryName() != null) {
+            completeAddress.append(address.getCountryName());
+        }
+        return completeAddress.toString();
     }
 }

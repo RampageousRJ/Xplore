@@ -36,6 +36,7 @@ public class login extends AppCompatActivity {
                 String password_to_check = hashPassword(password.getText().toString());
                 if(dbHandler.validateUser(getApplicationContext(),email.getText().toString(), password_to_check)) {
                     Intent mainPage = new Intent(view.getContext(), landingPage.class);
+                    mainPage.putExtra("email", email.getText().toString());
                     startActivity(mainPage);
                 }
             }
