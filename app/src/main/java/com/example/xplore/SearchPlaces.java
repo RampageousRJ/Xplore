@@ -67,14 +67,17 @@ public class SearchPlaces extends AppCompatActivity {
         places_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(SearchPlaces.this, place_map.get(adapterView.getItemAtPosition(i).toString()), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SearchPlaces.this, PlaceDetails.class);
+                intent.putExtra("fsq_id", place_map.get(adapterView.getItemAtPosition(i).toString()));
+                intent.putExtra("distance", place_map.get(adapterView.getItemAtPosition(i).toString()+"_distance"));
+                startActivity(intent);
             }
         });
     }
 
     private void getDefaultPlaces(double latitude, double longitude,String query) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "https://api.foursquare.com/v3/places/search?query="+query+"&ll="+latitude+"%2C"+longitude+"&radius=5000&limit=50", null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "https://api.foursquare.com/v3/places/search?query="+query+"&ll="+latitude+"%2C"+longitude+"&radius=5000&limit=50&sort=POPULARITY", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -96,6 +99,7 @@ public class SearchPlaces extends AppCompatActivity {
                             try {
                                 list_elements.add(place.getString("name"));
                                 place_map_temp.put(place.getString("name"), place.getString("fsq_id"));
+                                place_map_temp.put(place.getString("name")+"_distance", place.getString("distance"));
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
@@ -108,7 +112,7 @@ public class SearchPlaces extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(SearchPlaces.this, "UnSuccessful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SearchPlaces.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override
@@ -123,7 +127,7 @@ public class SearchPlaces extends AppCompatActivity {
 
     private void getDefaultPlaces(double latitude, double longitude) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "https://api.foursquare.com/v3/places/search?ll="+latitude+"%2C"+longitude+"&radius=5000&limit=50", null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, "https://api.foursquare.com/v3/places/search?ll="+latitude+"%2C"+longitude+"&radius=5000&limit=50&sort=POPULARITY", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -145,6 +149,7 @@ public class SearchPlaces extends AppCompatActivity {
                             try {
                                 list_elements.add(place.getString("name"));
                                 place_map_temp.put(place.getString("name"), place.getString("fsq_id"));
+                                place_map_temp.put(place.getString("distance"), place.getString("distance"));
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
